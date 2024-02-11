@@ -1,0 +1,7 @@
+[submodule "Components/nrf24l01"]
+	path = Components/nrf24l01
+	url = git@github.com:phonght32/nrf24l01.git
+[submodule "Components/mcu_port"]
+	path = Components/mcu_port
+	url = git@github.com:phonght32/mcu_port.git
+	branch = feature/stm32_hal
