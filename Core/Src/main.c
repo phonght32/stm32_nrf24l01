@@ -103,6 +103,7 @@ int main(void)
     nrf24l01_tx_handle = nrf24l01_init();
     nrf24l01_cfg_t nrf24l01_tx_cfg = {
         .channel = 2500,
+		.payload_len = 8,
         .crc_len = 1,
         .addr_width = 5,
         .retrans_cnt = 3,
@@ -121,6 +122,7 @@ int main(void)
     nrf24l01_rx_handle = nrf24l01_init();
     nrf24l01_cfg_t nrf24l01_rx_cfg = {
         .channel = 2500,
+		.payload_len = 8,
         .crc_len = 1,
         .addr_width = 5,
         .retrans_cnt = 3,
