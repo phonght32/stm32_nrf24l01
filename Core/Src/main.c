@@ -26,7 +26,6 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "nrf24l01.h"
-#include "serial_log.h"
 /* USER CODE END Includes */
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
@@ -74,8 +73,6 @@ err_code_t hw_intf_nrf24l01_rx_spi_send(uint8_t *buf_send, uint16_t len, uint32_
 err_code_t hw_intf_nrf24l01_rx_spi_recv(uint8_t *buf_recv, uint16_t len, uint32_t timeout_ms);
 err_code_t hw_intf_nrf24l01_rx_set_cs(uint8_t level);
 err_code_t hw_intf_nrf24l01_rx_set_ce(uint8_t level);
-
-void hw_intf_log_func(uint8_t *data, uint16_t len, uint32_t timeout_ms);
 /* USER CODE END PFP */
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
@@ -138,9 +135,6 @@ int main(void)
     };
     nrf24l01_set_config(nrf24l01_rx_handle, nrf24l01_rx_cfg);
     nrf24l01_config(nrf24l01_rx_handle);
-
-    serial_log_function_set(hw_intf_log_func, HAL_GetTick);
-
     /* USER CODE END 2 */
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
@@ -224,7 +218,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         HAL_UART_Transmit(&HW_SERIAL_LOG_UART_HANDLE, (uint8_t*)log_buf, 28, 100);
 
         sprintf((char*)log_buf, (const char*)"\r\nReceived data   : %s", rx_data);
-        HAL_UART_Transmit(&HW_SERIAL_LOG_UART_HANDLE, (uint8_t*)log_buf, 29, 100);
+        HAL_UART_Transmit(&HW_SERIAL_LOG_UART_HANDLE, (uint8_t*)log_buf, 28, 100);
 
         sprintf((char*)log_buf, (const char*)"\r\n**************************");
         HAL_UART_Transmit(&HW_SERIAL_LOG_UART_HANDLE, (uint8_t*)log_buf, 28, 100);
@@ -293,11 +287,6 @@ err_code_t hw_intf_nrf24l01_rx_set_ce(uint8_t level)
     HAL_GPIO_WritePin(NRF24L01_RX_SPI_CE_PORT, NRF24L01_RX_SPI_CE_PIN_NUM, level);
 
     return ERR_CODE_SUCCESS;
-}
-
-void hw_intf_log_func(uint8_t *data, uint16_t len, uint32_t timeout_ms)
-{
-    HAL_UART_Transmit(&HW_SERIAL_LOG_UART_HANDLE, (uint8_t*)data, len, timeout_ms);
 }
 /* USER CODE END 4 */
 /**
