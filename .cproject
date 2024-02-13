@@ -51,7 +51,6 @@
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/stm32_nrf24l01/Components/nrf24l01}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/stm32_nrf24l01/Components/mcu_port}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/stm32_nrf24l01/Components/hd44780_driver}&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1146987072" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
