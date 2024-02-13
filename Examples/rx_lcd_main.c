@@ -27,7 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "nrf24l01.h"
-#include "hd44780_driver.h"
+#include "hd44780.h"
 /* USER CODE END Includes */
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
@@ -42,7 +42,7 @@
 #define NRF24L01_RX_IRQ_PORT            GPIOB
 #define NRF24L01_RX_IRQ_PIN_NUM         GPIO_PIN_8
 
-#define HD44780_I2C_HANDLE 				&hi2c2
+#define HD44780_I2C_HANDLE              &hi2c2
 
 #define HW_SERIAL_LOG_UART_HANDLE       huart4
 /* USER CODE END PD */
@@ -52,7 +52,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 nrf24l01_handle_t nrf24l01_rx_handle;
-hd44780_driver_handle_t hd44780_driver_handle;
+hd44780_handle_t hd44780_handle;
 uint8_t rx_data[8] = {'N', 'o', ' ', 'd', 'a', 't', 'a', ' '};
 uint8_t log_buf[50];
 /* USER CODE END PV */
@@ -64,7 +64,7 @@ err_code_t hw_intf_nrf24l01_rx_spi_recv(uint8_t *buf_recv, uint16_t len, uint32_
 err_code_t hw_intf_nrf24l01_rx_set_cs(uint8_t level);
 err_code_t hw_intf_nrf24l01_rx_set_ce(uint8_t level);
 
-err_code_t hw_intf_hd44780_driver_i2c_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms);
+err_code_t hw_intf_hd44780_i2c_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms);
 /* USER CODE END PFP */
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
@@ -96,7 +96,7 @@ int main(void)
     nrf24l01_rx_handle = nrf24l01_init();
     nrf24l01_cfg_t nrf24l01_rx_cfg = {
         .channel = 2500,
-		.payload_len = 8,
+        .payload_len = 8,
         .crc_len = 1,
         .addr_width = 5,
         .retrans_cnt = 3,
@@ -112,27 +112,27 @@ int main(void)
     nrf24l01_set_config(nrf24l01_rx_handle, nrf24l01_rx_cfg);
     nrf24l01_config(nrf24l01_rx_handle);
 
-    hd44780_driver_handle = hd44780_driver_init();
-	hd44780_driver_cfg_t hd44780_driver_cfg = {
-		.size = HD44780_DRIVER_SIZE_16_2,
-		.comm_mode = HD44780_DRIVER_COMM_MODE_SERIAL,
-		.i2c_send = hw_intf_hd44780_driver_i2c_send,
-		.delay = HAL_Delay
-	};
-	hd44780_driver_set_config(hd44780_driver_handle, hd44780_driver_cfg);
-	hd44780_driver_config(hd44780_driver_handle);
-	hd44780_driver_clear(hd44780_driver_handle);
+    hd44780_handle = hd44780_init();
+    hd44780_cfg_t hd44780_cfg = {
+        .size = HD44780_SIZE_16_2,
+        .comm_mode = HD44780_COMM_MODE_SERIAL,
+        .i2c_send = hw_intf_hd44780_i2c_send,
+        .delay = HAL_Delay
+    };
+    hd44780_set_config(hd44780_handle, hd44780_cfg);
+    hd44780_config(hd44780_handle);
+    hd44780_clear(hd44780_handle);
   /* USER CODE END 2 */
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1)
     {
 
-        hd44780_driver_home(hd44780_driver_handle);
-		hd44780_driver_write_string(hd44780_driver_handle, (uint8_t *)"Receive data:");
+        hd44780_home(hd44780_handle);
+        hd44780_write_string(hd44780_handle, (uint8_t *)"Receive data:");
 
-		hd44780_driver_gotoxy(hd44780_driver_handle, 0, 1);
-		hd44780_driver_write_string(hd44780_driver_handle, (uint8_t *)rx_data);
+        hd44780_gotoxy(hd44780_handle, 0, 1);
+        hd44780_write_string(hd44780_handle, (uint8_t *)rx_data);
 
         HAL_Delay(200);
         /* USER CODE END WHILE */
@@ -228,11 +228,11 @@ err_code_t hw_intf_nrf24l01_rx_set_ce(uint8_t level)
     return ERR_CODE_SUCCESS;
 }
 
-err_code_t hw_intf_hd44780_driver_i2c_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms)
+err_code_t hw_intf_hd44780_i2c_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms)
 {
-	HAL_I2C_Master_Transmit(HD44780_I2C_HANDLE, (0x3F<<1), buf_send, len, timeout_ms);
+    HAL_I2C_Master_Transmit(HD44780_I2C_HANDLE, (0x3F<<1), buf_send, len, timeout_ms);
 
-	return ERR_CODE_SUCCESS;
+    return ERR_CODE_SUCCESS;
 }
 /* USER CODE END 4 */
 /**
