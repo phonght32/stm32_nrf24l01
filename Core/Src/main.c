@@ -69,13 +69,13 @@ uint8_t log_buf[50];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-err_code_t hw_intf_nrf24l01_tx_spi_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms);
-err_code_t hw_intf_nrf24l01_tx_spi_recv(uint8_t *buf_recv, uint16_t len, uint32_t timeout_ms);
+err_code_t hw_intf_nrf24l01_tx_spi_send(uint8_t *buf_send, uint16_t len);
+err_code_t hw_intf_nrf24l01_tx_spi_recv(uint8_t *buf_recv, uint16_t len);
 err_code_t hw_intf_nrf24l01_tx_set_cs(uint8_t level);
 err_code_t hw_intf_nrf24l01_tx_set_ce(uint8_t level);
 
-err_code_t hw_intf_nrf24l01_rx_spi_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms);
-err_code_t hw_intf_nrf24l01_rx_spi_recv(uint8_t *buf_recv, uint16_t len, uint32_t timeout_ms);
+err_code_t hw_intf_nrf24l01_rx_spi_send(uint8_t *buf_send, uint16_t len);
+err_code_t hw_intf_nrf24l01_rx_spi_recv(uint8_t *buf_recv, uint16_t len);
 err_code_t hw_intf_nrf24l01_rx_set_cs(uint8_t level);
 err_code_t hw_intf_nrf24l01_rx_set_ce(uint8_t level);
 
@@ -252,7 +252,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
     else if (GPIO_Pin == NRF24L01_TX_IRQ_PIN_NUM)
     {
-        nrf24l01_transmit_irq(nrf24l01_tx_handle);
+    	nrf24l01_clear_transmit_irq_flags(nrf24l01_tx_handle);
     }
     else
     {
@@ -260,16 +260,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
 }
 
-err_code_t hw_intf_nrf24l01_tx_spi_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms)
+err_code_t hw_intf_nrf24l01_tx_spi_send(uint8_t *buf_send, uint16_t len)
 {
-    HAL_SPI_Transmit(NRF24L01_TX_SPI, buf_send, len, timeout_ms);
+    HAL_SPI_Transmit(NRF24L01_TX_SPI, buf_send, len, 100);
 
     return ERR_CODE_SUCCESS;
 }
 
-err_code_t hw_intf_nrf24l01_tx_spi_recv(uint8_t *buf_recv, uint16_t len, uint32_t timeout_ms)
+err_code_t hw_intf_nrf24l01_tx_spi_recv(uint8_t *buf_recv, uint16_t len)
 {
-    HAL_SPI_Receive(NRF24L01_TX_SPI, buf_recv, len, timeout_ms);
+    HAL_SPI_Receive(NRF24L01_TX_SPI, buf_recv, len, 100);
 
     return ERR_CODE_SUCCESS;
 }
@@ -288,16 +288,16 @@ err_code_t hw_intf_nrf24l01_tx_set_ce(uint8_t level)
     return ERR_CODE_SUCCESS;
 }
 
-err_code_t hw_intf_nrf24l01_rx_spi_send(uint8_t *buf_send, uint16_t len, uint32_t timeout_ms)
+err_code_t hw_intf_nrf24l01_rx_spi_send(uint8_t *buf_send, uint16_t len)
 {
-    HAL_SPI_Transmit(NRF24L01_RX_SPI, buf_send, len, timeout_ms);
+    HAL_SPI_Transmit(NRF24L01_RX_SPI, buf_send, len, 100);
 
     return ERR_CODE_SUCCESS;
 }
 
-err_code_t hw_intf_nrf24l01_rx_spi_recv(uint8_t *buf_recv, uint16_t len, uint32_t timeout_ms)
+err_code_t hw_intf_nrf24l01_rx_spi_recv(uint8_t *buf_recv, uint16_t len)
 {
-    HAL_SPI_Receive(NRF24L01_RX_SPI, buf_recv, len, timeout_ms);
+    HAL_SPI_Receive(NRF24L01_RX_SPI, buf_recv, len, 100);
 
     return ERR_CODE_SUCCESS;
 }
